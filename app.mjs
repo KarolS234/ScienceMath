@@ -9,34 +9,62 @@ const icons = {
  vector:'M4 3v17h17M5 19 19 5m-6 0h6v6',box:'m12 2 9 5v10l-9 5-9-5V7l9-5zm0 10 9-5m-9 5L3 7m9 5v10',
  temp:'M9 14V5a3 3 0 0 1 6 0v9a5 5 0 1 1-6 0Zm3-6v9',power:'m3 18 8-8m0 8-8-8m11-4c0-4 7-4 7-1 0 2-7 3-7 6h7',grid:'M3 3h18v18H3zm0 9h18M12 3v18'
 };
-const count = topics.reduce((n, t) => n + t.formulas.length, 0);
-$('topic-count').textContent = `${topics.length} temas`;
 let topic = topics[0], formula = topic.formulas[0], fields = [];
-const buttons = topics.map((item, i) => {
- const button = document.createElement('button');
- button.type = 'button';
- button.className = 'topic';
- button.innerHTML = `<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="${icons[item.glyph]}"/></svg>`;
- button.append(document.createTextNode(item.name));
- button.addEventListener('click', () => selectTopic(i));
- $('topics').append(button);
- $('mobile-topics').add(new Option(item.name, i));
- return button;
-});
-$('mobile-topics').addEventListener('change', e => selectTopic(Number(e.target.value)));
+let activeTopic = null;
+const cards = new Map(topics.map(item => {
+ const card = document.createElement('a');
+ card.className = 'topic-card';
+ card.href = '#' + item.id;
+ card.addEventListener('click', event => {
+  if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  event.preventDefault();
+  history.pushState({fromCatalog:true},'',card.href);
+  renderRoute(true);
+ });
+ card.innerHTML = `<span class="topic-icon"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="${icons[item.glyph]}"/></svg></span>`;
+ const title = document.createElement('strong'), description = document.createElement('span');
+ title.textContent = item.name;
+ description.className = 'topic-description';
+ description.textContent = item.description;
+ card.append(title, description);
+ $('topics').append(card);
+ return [item.id,card];
+}));
 $('formula').addEventListener('change', e => selectFormula(Number(e.target.value)));
 
-function selectTopic(index) {
- topic = topics[index];
- buttons.forEach((button,i)=>button.setAttribute('aria-current', String(index === i)));
- $('mobile-topics').value = index;
- $('topic-title').textContent = topic.name;
- $('topic-description').textContent = topic.description;
- $('topic-label').textContent = `TEMA ${String(index+1).padStart(2,'0')} / ${topics.length} · ${count} FÓRMULAS`;
- document.querySelector('.hero-art').hidden = topic.id !== 'parabolico';
- $('formula').replaceChildren(...topic.formulas.map((f,i)=>new Option(f.name,i)));
- selectFormula(0);
+function renderRoute(moveFocus = false) {
+ const item = topics.find(t => '#' + t.id === location.hash);
+ const previous = activeTopic;
+ activeTopic = item?.id ?? null;
+ $('home').hidden = !!item;
+ $('workspace').hidden = !item;
+ if (item) {
+  topic = item;
+  $('topic-title').textContent = item.name;
+  $('topic-description').textContent = item.description;
+  $('formula').replaceChildren(...item.formulas.map((f,i)=>new Option(f.name,i)));
+  selectFormula(0);
+  document.title = `${item.name} · ScienceMath`;
+ } else {
+  document.title = 'ScienceMath · Calculadora de física';
+ }
+ if (moveFocus) {
+  const target = item ? $('topic-title') : cards.get(previous) ?? $('home-title');
+  if (item || !previous) window.scrollTo(0,0);
+  target.focus();
+ }
 }
+$('back').addEventListener('click', event => {
+ if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+ event.preventDefault();
+ if (history.state?.fromCatalog) { history.back(); return; }
+ history.replaceState(null,'',location.pathname + location.search);
+ renderRoute(true);
+});
+window.addEventListener('hashchange',()=>{
+ const route = topics.find(t => '#' + t.id === location.hash)?.id ?? null;
+ if (route !== activeTopic) renderRoute(true);
+});
 function selectFormula(index) {
  formula = topic.formulas[index];
  $('equation').textContent = formula.equation;
@@ -166,7 +194,7 @@ $('calculator').addEventListener('submit', e=>{
   }
  }
 });
-selectTopic(0);
+renderRoute();
 
 let deferredInstall;
 const install = $('install');
@@ -182,8 +210,4 @@ install.addEventListener('click',async ()=>{
  deferredInstall = null;
  try { await prompt.prompt(); } catch { $('install-help').showModal(); }
 });
-if('serviceWorker' in navigator){
- navigator.serviceWorker.register('./sw.js').then(()=>navigator.serviceWorker.ready)
-  .then(()=>{$('offline-status').textContent='● Disponible sin conexión';})
-  .catch(()=>{});
-}
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});

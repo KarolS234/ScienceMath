@@ -14,7 +14,7 @@ Sube el código a `main`. En **Settings → Pages → Build and deployment**, se
 
 Abre el enlace publicado. Usa **Instalar app** o la opción de instalación del navegador; en iPhone, abre el enlace en Safari y elige **Compartir → Agregar a inicio**. Tras completar la primera carga, la app puede volver a abrirse sin internet.
 
-Al cambiar los archivos que entrega la PWA, actualiza la versión de caché en `sw.js` y agrega cualquier recurso nuevo a la lista. Cierra todas las pestañas y ventanas de ScienceMath para que la versión nueva tome el control.
+Al cambiar los archivos que entrega la PWA, actualiza la versión de caché en `sw.js` y agrega cualquier recurso nuevo a la lista. Cuando se descargue la actualización, vuelve a cargar la página para abrir la versión nueva.
 
 ## Implementación y fórmulas
 

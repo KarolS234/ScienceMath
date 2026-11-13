@@ -1,10 +1,10 @@
 const prefix = 'sciencemath:' + self.registration.scope + ':';
-const cacheName = prefix + 'v1';
+const cacheName = prefix + 'v3';
 const files = ['./', './styles.css', './app.mjs', './formulas.mjs', './manifest.webmanifest', './icons/atom.svg', './icons/icon-192.png', './icons/icon-512.png', './icons/maskable-512.png'];
 const urls = new Set(files.map(path => new URL(path, self.registration.scope).href));
 
 self.addEventListener('install', event => {
-  event.waitUntil(caches.open(cacheName).then(cache => cache.addAll(files.map(path => new Request(path,{cache:'reload'})))));
+  event.waitUntil(caches.open(cacheName).then(cache => cache.addAll(files.map(path => new Request(path,{cache:'reload'})))).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', event => {
   event.waitUntil((async () => {
