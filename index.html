@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#100e16">
+<meta name="description" content="Calculadora de física con fórmulas, unidades y resultados.">
+<title>ScienceMath · Calculadora de física</title>
+<link rel="icon" href="./icons/atom.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="./icons/icon-192.png">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="stylesheet" href="./styles.css">
+<script type="module" src="./app.mjs"></script>
+</head>
+<body>
+<header class="top"><div class="top-inner">
+  <a href="./" class="brand"><img src="./icons/atom.svg" alt="" width="40" height="40"><span>Science<span>Math</span><small>CALCULADORA DE FÍSICA</small></span></a>
+  <button type="button" id="install" class="secondary"><span aria-hidden="true">↓</span> Instalar app</button>
+</div></header>
+<main class="shell">
+ <aside class="catalog">
+  <div class="catalog-head"><span class="eyebrow">EXPLORAR</span><span class="count" id="topic-count"></span></div>
+  <nav aria-label="Temas de física" id="topics"></nav>
+  <div class="mobile-picker"><label for="mobile-topics">Tema de física</label><select id="mobile-topics"></select></div>
+ </aside>
+ <div class="workspace">
+  <section class="hero" aria-labelledby="topic-title">
+   <svg aria-hidden="true" class="hero-art" viewBox="0 0 340 175" fill="none">
+    <defs><pattern id="grid" width="25" height="25" patternUnits="userSpaceOnUse"><path d="M25 0H0V25" stroke="#a884f3" stroke-opacity=".19"/></pattern><linearGradient id="arc" x1="40" y1="146" x2="295" y2="140" gradientUnits="userSpaceOnUse"><stop stop-color="#7d52ce"/><stop offset=".52" stop-color="#d2b6ff"/><stop offset="1" stop-color="#8055c5"/></linearGradient></defs>
+    <path fill="url(#grid)" d="M0 0h340v175H0z"/>
+    <path d="M35 140H315M35 140V25M164 47V140" stroke="#af93da" stroke-opacity=".5" stroke-dasharray="4 5"/>
+    <path d="M42 139Q164 -48 286 139" stroke="url(#arc)" stroke-width="2.5"/>
+    <g fill="#dac5ff"><circle cx="42" cy="139" r="3"/><circle cx="103" cy="69" r="3"/><circle cx="164" cy="45.5" r="4"/><circle cx="225" cy="69" r="3"/><circle cx="286" cy="139" r="3"/></g>
+    <g fill="#bb9ee7" font-family="monospace" font-size="12"><text x="175" y="41">h máx.</text><text x="311" y="157">x</text><text x="21" y="28">y</text></g>
+   </svg>
+   <div class="hero-copy"><div class="eyebrow" id="topic-label">CALCULADORA</div><h1 id="topic-title">Tiro parabólico</h1><p id="topic-description"></p></div>
+  </section>
+  <div class="work-grid">
+   <section class="panel calculator" aria-labelledby="calculator-title">
+    <div class="section-label"><span>01</span> CONFIGURACIÓN</div>
+    <h2 id="calculator-title">¿Qué quieres calcular?</h2>
+    <label for="formula">Magnitud o fórmula</label>
+    <select id="formula"></select>
+    <form id="calculator" novalidate>
+      <div id="fields"></div>
+      <div id="segments" hidden><button type="button" id="add" class="secondary">+ Agregar tramo</button><button type="button" id="remove" class="secondary">− Quitar último</button></div>
+      <p class="error" id="error" role="alert" hidden></p>
+      <div class="actions" id="actions"><button class="primary" type="submit">Calcular <span aria-hidden="true">→</span></button><button class="secondary" id="clear" type="button">Limpiar</button></div>
+    </form>
+   </section>
+   <div class="output-stack">
+    <section class="panel equation-panel" aria-labelledby="equation-title">
+     <div class="section-label"><span aria-hidden="true">ƒ</span> ECUACIÓN</div>
+     <h2 id="equation-title">Fórmula aplicada</h2>
+     <p id="equation" class="equation"></p><p id="note" class="note"></p>
+    </section>
+    <section class="panel result-panel" aria-labelledby="result-title">
+     <div class="section-label"><span>02</span> SALIDA</div>
+     <h2 id="result-title">Resultado</h2>
+     <div class="readout" aria-live="polite" aria-atomic="true"><output id="result">—</output> <span id="unit"></span><p id="result-hint"></p></div>
+    </section>
+   </div>
+  </div>
+  <footer><span>ScienceMath <span class="divider">/</span> Física aplicada</span><span id="offline-status" role="status"></span></footer>
+ </div>
+</main>
+<dialog id="install-help">
+ <h2>Instalar ScienceMath</h2>
+ <p>En iPhone, abre ScienceMath en Safari y toca <strong>Compartir → Agregar a inicio</strong>.</p>
+ <p>En Android o computadora, busca <strong>Instalar aplicación</strong> o <strong>Añadir a pantalla de inicio</strong> en el menú de tu navegador.</p>
+ <form method="dialog"><button class="secondary">Cerrar</button></form>
+</dialog>
+</body>
+</html>
